@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanzplan Excel Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #ffffff;
+        }
+        
+        .logo-text {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        
+        .logo-subtext {
+            font-size: 1.1em;
+            color: #cccccc;
+            margin-bottom: 15px;
+        }
+        
+        .logo-ttn {
+            font-size: 4em;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -5px;
+            margin: 15px 0;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo-motto {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+        
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #ffffff;
+        }
+        
+        .info h3 {
+            margin-top: 0;
+            color: #ffffff;
+        }
+        
+        .info ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .info li {
+            margin: 5px 0;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ffffff, #f0f0f0);
+            color: #1a1a1a;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .preview {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        
+        .preview h3 {
+            color: #1a1a1a;
+            margin-top: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #1a1a1a;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .day-section {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-header">
+            <div class="logo-text">Techno Tanz Überprüfungsverein Nord e.V.</div>
+            <div class="logo-ttn">TTN</div>
+            <div class="logo-motto">BASS. LIEBE. SICHERHEIT.</div>
+        </div>
+        
+        <h1>🎭 Festival Tanzplan Generator</h1>
+        
+        <div class="info">
+            <h3>🎪 Perfekte Festival-Vorlage:</h3>
+            <p><strong>Ideal für mehrtägige Festivals, Techno-Events und Clubnächte!</strong> Diese Vorlage wurde speziell für die Anforderungen von Festivals entwickelt und bietet eine professionelle Struktur für Ihr Event-Management.</p>
+            <h4>📋 Zeitplan-Struktur (6 Tage):</h4>
+            <ul>
+                <li><strong>Mittwoch:</strong> 14:00 - 10:00 (nächster Tag)</li>
+                <li><strong>Donnerstag:</strong> 10:00 - 10:00 (nächster Tag)</li>
+                <li><strong>Freitag:</strong> 10:00 - 10:00 (nächster Tag)</li>
+                <li><strong>Samstag:</strong> 10:00 - 10:00 (nächster Tag)</li>
+                <li><strong>Sonntag:</strong> 10:00 - 10:00 (nächster Tag)</li>
+                <li><strong>Montag:</strong> 10:00 - 10:00</li>
+            </ul>
+            <p><strong>🎯 Festival-Features:</strong> Jeder Tag erhält ein eigenes Arbeitsblatt mit den Spalten: <strong>Uhrzeit, Bühne, Artist</strong> - perfekt für Multi-Stage-Events!</p>
+            <p><strong>📄 DIN A4 optimiert:</strong> Jeder Tag passt garantiert auf eine DIN A4-Seite im PDF-Export!</p>
+            <p><strong>🎵 Anwendung:</strong> Techno-Festivals, Electronic Music Events, Club-Weekends, Rave-Marathons, Open-Air-Veranstaltungen</p>
+        </div>
+        
+        <div class="button-container">
+            <button onclick="generateAndDownloadExcel()">📥 Excel-Datei herunterladen</button>
+            <button onclick="generateAndDownloadPDF()">📄 PDF-Datei herunterladen</button>
+        </div>
+        
+        <div class="preview">
+            <h3>🎪 Vorschau der Festival-Struktur:</h3>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function generateTimeSlots(startHour, endHour, isOvernight = false) {
+            const slots = [];
+            
+            if (isOvernight) {
+                // Von startHour bis 23:59
+                for (let hour = startHour; hour <= 23; hour++) {
+                    slots.push(`${hour.toString().padStart(2, '0')}:00`);
+                }
+                // Von 00:00 bis endHour
+                for (let hour = 0; hour <= endHour; hour++) {
+                    slots.push(`${hour.toString().padStart(2, '0')}:00`);
+                }
+            } else {
+                // Normaler Tag
+                for (let hour = startHour; hour <= endHour; hour++) {
+                    slots.push(`${hour.toString().padStart(2, '0')}:00`);
+                }
+            }
+            
+            return slots;
+        }
+
+        function generateDayData(dayName, timeSlots) {
+            const data = [];
+            data.push(['Uhrzeit', 'Bühne', 'Artist']); // Header
+            
+            timeSlots.forEach(time => {
+                data.push([time, '', '']); // Leere Zeilen für Eingabe
+            });
+            
+            return data;
+        }
+
+        function generateAndDownloadExcel() {
+            const wb = XLSX.utils.book_new();
+            
+            // Definiere die Tage und ihre Zeiträume (bis Montag 10 Uhr)
+            const days = [
+                { name: 'Mittwoch', startHour: 14, endHour: 10, isOvernight: true },
+                { name: 'Donnerstag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Freitag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Samstag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Sonntag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Montag', startHour: 10, endHour: 10, isOvernight: false }
+            ];
+            
+            days.forEach(day => {
+                const timeSlots = generateTimeSlots(day.startHour, day.endHour, day.isOvernight);
+                const dayData = generateDayData(day.name, timeSlots);
+                
+                const ws = XLSX.utils.aoa_to_sheet(dayData);
+                
+                // Spaltenbreite setzen
+                ws['!cols'] = [
+                    { width: 12 }, // Uhrzeit
+                    { width: 20 }, // Bühne
+                    { width: 25 }  // Artist
+                ];
+                
+                // Header-Stil (wird in Excel als erste Zeile erkannt)
+                const range = XLSX.utils.decode_range(ws['!ref']);
+                for (let col = range.s.c; col <= range.e.c; col++) {
+                    const headerCell = ws[XLSX.utils.encode_cell({r: 0, c: col})];
+                    if (headerCell) {
+                        headerCell.s = {
+                            font: { bold: true },
+                            fill: { fgColor: { rgb: "4472C4" } },
+                            alignment: { horizontal: "center" }
+                        };
+                    }
+                }
+                
+                XLSX.utils.book_append_sheet(wb, ws, `Festival ${day.name}`);
+            });
+            
+            // Excel-Datei herunterladen
+            XLSX.writeFile(wb, 'TTN_Festival_Tanzplan_6_Tage.xlsx');
+        }
+
+        function generateAndDownloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            // Definiere die Tage und ihre Zeiträume (bis Montag 10 Uhr)
+            const days = [
+                { name: 'Mittwoch', startHour: 14, endHour: 10, isOvernight: true },
+                { name: 'Donnerstag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Freitag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Samstag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Sonntag', startHour: 10, endHour: 10, isOvernight: true },
+                { name: 'Montag', startHour: 10, endHour: 10, isOvernight: false }
+            ];
+            
+            let isFirstPage = true;
+            
+            days.forEach((day, dayIndex) => {
+                if (!isFirstPage) {
+                    doc.addPage();
+                }
+                
+                // Logo und Header
+                doc.setFillColor(26, 26, 26);
+                doc.rect(0, 0, 210, 40, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text('Techno Tanz Überprüfungsverein Nord e.V.', 105, 18, { align: 'center' });
+                
+                doc.setFontSize(24);
+                doc.setFont(undefined, 'bold');
+                doc.text('TTN', 105, 30, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.text('BASS. LIEBE. SICHERHEIT.', 105, 36, { align: 'center' });
+                
+                // Titel für den Tag
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(18);
+                doc.setFont(undefined, 'bold');
+                doc.text(`Festival Tanzplan - ${day.name}`, 105, 55, { align: 'center' });
+                
+                // Zeitslots generieren
+                const timeSlots = generateTimeSlots(day.startHour, day.endHour, day.isOvernight);
+                
+                // Tabelle mit Zeitslots
+                const tableData = timeSlots.map(time => [time, '', '']);
+                
+                doc.autoTable({
+                    startY: 65,
+                    head: [['Uhrzeit', 'Bühne', 'Artist']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: {
+                        fillColor: [26, 26, 26],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold',
+                        fontSize: 10
+                    },
+                    bodyStyles: {
+                        fontSize: 9,
+                        cellPadding: 3
+                    },
+                    columnStyles: {
+                        0: { cellWidth: 25, halign: 'center' },
+                        1: { cellWidth: 60 },
+                        2: { cellWidth: 80 }
+                    },
+                    margin: { left: 22.5, right: 22.5 },
+                    tableWidth: 165
+                });
+                
+                // Seitennummer
+                doc.setFontSize(8);
+                doc.setTextColor(128, 128, 128);
+                doc.text(`Seite ${dayIndex + 1} von ${days.length}`, 105, 290, { align: 'center' });
+                
+                isFirstPage = false;
+            });
+            
+            // PDF herunterladen
+            doc.save('TTN_Festival_Tanzplan_5_Tage.pdf');
+        }
+
+        // Vorschau generieren
+        function generatePreview() {
+            const days = [
+                { name: 'Mittwoch', startHour: 14, endHour: 10, isOvernight: true },
+                { name: 'Donnerstag', startHour: 10, endHour: 10, isOvernight: true }
+            ];
+            
+            let previewHTML = '';
+            
+            days.slice(0, 2).forEach(day => {
+                const timeSlots = generateTimeSlots(day.startHour, day.endHour, day.isOvernight);
+                
+                previewHTML += `
+                    <div class="day-section">
+                        <h4>Festival-Tag: ${day.name}</h4>
+                        <table>
+                            <tr>
+                                <th>Uhrzeit</th>
+                                <th>Bühne</th>
+                                <th>Artist</th>
+                            </tr>
+                `;
+                
+                // Zeige nur die ersten 5 Zeitslots für die Vorschau
+                timeSlots.slice(0, 5).forEach(time => {
+                    previewHTML += `
+                        <tr>
+                            <td>${time}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    `;
+                });
+                
+                if (timeSlots.length > 5) {
+                    previewHTML += `
+                        <tr>
+                            <td colspan="3" style="text-align: center; font-style: italic; color: #666;">
+                                ... und ${timeSlots.length - 5} weitere Zeitslots
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                previewHTML += '</table></div>';
+            });
+            
+            previewHTML += '<p style="font-style: italic; color: #666;">... und 4 weitere Festival-Tage für Freitag, Samstag, Sonntag und Montag</p>';
+            
+            document.getElementById('previewContent').innerHTML = previewHTML;
+        }
+
+        // Vorschau beim Laden der Seite generieren
+        window.onload = function() {
+            generatePreview();
+        };
+    </script>
+</body>
+</html>

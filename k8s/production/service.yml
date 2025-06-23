@@ -1,0 +1,18 @@
+# k8s/production/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ttn-tanzplan-generator
+  namespace: NAMESPACE_PLACEHOLDER
+  labels:
+    app: ttn-tanzplan-generator
+    environment: production
+spec:
+  selector:
+    app: ttn-tanzplan-generator
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+  type: ClusterIP

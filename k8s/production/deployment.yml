@@ -1,0 +1,64 @@
+# k8s/production/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ttn-tanzplan-generator
+  namespace: NAMESPACE_PLACEHOLDER
+  labels:
+    app: ttn-tanzplan-generator
+    environment: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ttn-tanzplan-generator
+  template:
+    metadata:
+      labels:
+        app: ttn-tanzplan-generator
+        environment: production
+    spec:
+      containers:
+        - name: nginx
+          image: IMAGE_PLACEHOLDER
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - ttn-tanzplan-generator
+                topologyKey: kubernetes.io/hostname
+
+---
+
+---
+# k8s/production/ingress.yaml
