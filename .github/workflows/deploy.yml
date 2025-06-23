@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: 🚀 Deploy TTN Festival Tanzplan Generator
 
 on:
@@ -89,10 +88,12 @@ jobs:
     name: 🚀 Deploy to Production
     runs-on: ubuntu-latest
     needs: build-and-test
-    if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == 'true'
+    if: github.ref == 'refs/heads/main' || github.event.inputs.deploy == true
     environment: 
       name: production
       url: https://tanzplan.der-ttn.de
+      
+    steps:
       
     steps:
     - name: 📦 Checkout Repository
